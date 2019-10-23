@@ -17,6 +17,12 @@
       dest: /etc/
       mode: '0440'
 
+  - name: Download sshd_config from git repo
+    get_url:
+      url: https://gitlab.com/habbis/openssh_config/raw/master/sshd_config
+      dest: /etc/ssh/
+      mode: '0744'
+
   - name: Create group for docker
     group:
       name: docker
@@ -28,6 +34,12 @@
       shell: /bin/bash
       groups: wheel
       append: yes
+
+  - name: set authorized keys from github to user
+    authorized_key:
+      user: root
+      state: present
+      key: https://github.com/habbis.keys
 
   - name: set authorized keys from github to user
     authorized_key:

@@ -11,6 +11,24 @@
       name: '*'
       state: latest
 
+  - name: Install packages centos7 and RHEL7
+    yum:
+      name:
+        - cockpit
+        - podman
+        - curl
+        - wget
+        - python2
+        - python3
+        - python3-pip
+        - git
+        - vim
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - epel-release
+      state: present
+
   - name: Download ssh_config from git repo
     get_url:
       url: https://raw.githubusercontent.com/habbis/sudoers_centos/master/sudoers
@@ -53,25 +71,43 @@
        #state: present
        #keys: https://github.com/habbis.keys
 
-  - name: Install packages centos7 and RHEL7
+
+  - name: install fail2ban
     yum:
-      name:
-        - cockpit
-        - curl
-        - wget
-        - python2
-        - python3
-        - python3-pip
-        - git
-        - vim
-        - yum-utils
-        - device-mapper-persistent-data
-        - lvm2
-        - epel-release
+      name: fail2ban
       state: present
 
-  - name: enable cockpit systemd service
-    firewalld:
-      service: cockpit
-      permanent: yes
-      state: enabled
+
+  - name: start
+    systemd:
+      name: cockpit
+      state: started
+      enabled: yes
+
+  - name: Create config file for fail2ban
+    template:
+      src: templates/jail.local
+      dest: /etc/fail2ban/jail.local
+      owner: root
+      group: root
+      mode: 0644
+
+  - name:  enable_fail2ban
+    systemd:
+      name: fail2ban
+      state: started
+      enabled: yes
+
+  - name: reload sshd 
+    service:
+      name: sshd
+      state: reloaded
+
+
+
+
+  #- name: enable cockpit systemd service
+    #firewalld:
+      #service: cockpit
+      #permanent: yes
+      #state: enabled

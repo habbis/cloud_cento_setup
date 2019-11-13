@@ -29,7 +29,7 @@
         - epel-release
       state: present
 
-  - name: Download ssh_config from git repo
+  - name: sudoers files
     get_url:
       url: https://raw.githubusercontent.com/habbis/sudoers_centos/master/sudoers
       dest: /etc/

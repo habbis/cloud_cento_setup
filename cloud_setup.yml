@@ -37,7 +37,7 @@
  - name: sudoers file
    get_url:
      url: https://raw.githubusercontent.com/habbis/sudoers/master/admins
-     dest: /etc/sudoers.d
+     dest: /etc/sudoers.d/
      mode: '0440'
 
   - name: Download sshd_config from git repo
